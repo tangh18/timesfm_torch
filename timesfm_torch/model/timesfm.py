@@ -2,7 +2,7 @@ import torch
 from timesfm_torch.model.model import *
 from timesfm_torch.model.utils import *
 
-class TimeSFM(nn.Module):
+class TimesFm(nn.Module):
     def __init__(self, context_len, horizon_len=128, input_patch_len=32, output_patch_len=128, num_layers=20, model_dims=1280, num_outputs=10):
         super().__init__()
         self.context_len = context_len
@@ -19,10 +19,11 @@ class TimeSFM(nn.Module):
         self.input_ff_layer = ResidualBlock(input_dims=64, hidden_dims=model_dims, output_dims=model_dims).to('cuda')
         self.stacked_transformer_layer = Transformer(num_layers=20, d_model=model_dims, num_heads=16, hidden_dim=model_dims).to('cuda')
 
-        self.freq_emb.load_state_dict(torch.load('../ckpt/freq_emb.pt', weights_only=True))
-        self.horizon_ff_layer.load_state_dict(torch.load('../ckpt/horizon_ff_layer.pt', weights_only=True))
-        self.input_ff_layer.load_state_dict(torch.load('../ckpt/input_ff_layer.pt', weights_only=True))
-        self.stacked_transformer_layer.load_state_dict(torch.load('../ckpt/stack_transformer.pt', weights_only=True))
+    def load_from_checkpoint(self, ckpt_dir):
+        self.freq_emb.load_state_dict(torch.load(f'{ckpt_dir}/freq_emb.pt', weights_only=True))
+        self.horizon_ff_layer.load_state_dict(torch.load(f'{ckpt_dir}/horizon_ff_layer.pt', weights_only=True))
+        self.input_ff_layer.load_state_dict(torch.load(f'{ckpt_dir}/input_ff_layer.pt', weights_only=True))
+        self.stacked_transformer_layer.load_state_dict(torch.load(f'{ckpt_dir}/stack_transformer.pt', weights_only=True))
 
     def forward(self, input_ts):
         """

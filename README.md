@@ -40,8 +40,9 @@ By default, the model loads the checkpoint during initialization. The `forward()
 
 #### Example Usage
 ```python
-from timesfm_torch.model.timesfm import TimeSFM
+from timesfm_torch.model.timesfm import TimesFm
 input_ts = torch.rand((32, 512)).to('cuda') # Input shape: (batch_size, context_len)
-timesfm = TimeSFM(context_len=512)
+timesfm = TimesFm(context_len=512)
+timesfm.load_from_checkpoint(ckpt_dir=f"timesfm_torch/timesfm_torch/ckpt")
 output_ts = timesfm(input_ts) # Output shape: (batch_size, patch_num, horizon_len, num_outputs)
 ```
