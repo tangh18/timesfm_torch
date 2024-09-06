@@ -34,12 +34,13 @@ class Embedding(nn.Module):
         """
         if self.set_nan_for_oob_id:
             mask = ids >= self.num_classes
-            ids = torch.where(mask, torch.tensor(0, device=ids.device, dtype=ids.dtype), ids)
+            ids = torch.where(mask, torch.tensor(0, device=ids.device, dtype=ids.dtype), ids).to('cuda')
         
+        ids = ids.to('cuda')
         embs = self.emb_var(ids)
 
         if self.set_nan_for_oob_id:
-            embs = torch.where(mask.unsqueeze(-1), torch.full_like(embs, float('nan')), embs)
+            embs = torch.where(mask.unsqueeze(-1), torch.full_like(embs, float('nan')), embs).to('cuda')
         
         if self.scale_sqrt_depth:
             embs *= self.input_dims ** 0.5
