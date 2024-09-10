@@ -1,0 +1,23 @@
+from ubuntu:22.04
+run apt-get update && apt-get install -y sudo
+workdir /pyenv
+run  apt-get update \
+  &&  apt-get install -y wget \
+  &&  apt install -y curl \
+  &&  rm -rf /var/lib/apt/lists/*
+run  wget "https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh" -O /pyenv/miniconda.sh \
+    &&  bash /pyenv/miniconda.sh -b -p /pyenv/miniconda \
+    &&  /pyenv/miniconda/bin/conda init bash
+env PATH=/pyenv/miniconda/bin:$PATH
+copy timesfm /workspace/tmp/env/timesfm
+workdir /workspace/tmp/env/timesfm
+run python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade pip
+run pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+run conda env create --file=environment.yml
+run conda install -n tfm_env pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia -y
+run groupadd -g YOUR_GID YOUR_USER_NAME
+run useradd -u YOUR_UID -g YOUR_USER_NAME -ms /bin/bash YOUR_USER_NAME && \
+    echo "YOUR_USER_NAME ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+user YOUR_USER_NAME
+run conda init
+SHELL ["conda", "run", "-n", "tfm_env", "/bin/bash", "-c"]

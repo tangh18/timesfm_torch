@@ -4,6 +4,9 @@ This repository provides an implementation of the Time Series Foundation Model (
 
 The purpose of this repository is to offer a PyTorch variant that can load checkpoints from the JAX version and enable fine-tuning. Given the scope of my personal needs and available resources, this implementation includes only the essential components required to operate the model effectively.
 
+## Update 09/10/24
+Add dockerfiles in `timesfm_torch/docker` for building container that can run TimesFM JAX version. If you have trouble converting the JAX weights to PyTorch weights, try converting them in docker container. See [timesfm_torch/docker/README.md](https://github.com/tangh18/timesfm_torch/tree/main/timesfm_torch/docker/README.md) for detail.
+
 ## Features
 
 ### Provided
